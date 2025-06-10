@@ -577,9 +577,9 @@ def monopoly_game(client: Client = None, cmd: str = None) -> None:
             client.num_rolls += 1
             ret_val = mply.process_roll(client.num_rolls, dice)
             if ret_val.startswith("player_choice"):
-                ret_val.replace("player_choice", "")
+                ret_val = ret_val.replace("player_choice", "")
                 if ret_val.startswith("rolled_doubles"):
-                    ret_val.replace("rolled_doubles", "")
+                    ret_val = ret_val.replace("rolled_doubles", "")
                     client.can_roll = True
                 else:
                     client.can_roll = False
