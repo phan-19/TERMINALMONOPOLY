@@ -668,12 +668,14 @@ def evaluate_board_location(num_rolls: int, dice: tuple) -> str:
     """
     done_moving_around = False
     card = ""
-    output = "" #info/msgs to be shown to the user after the board position has been evaluated 
+    output_notiffs = [] #options user can use after position has been evaluated
+    output_options = [] #info/msgs to be shown to the user after the board position has been evaluated 
     while not done_moving_around:
         done_moving_around = True
         if board.locations[players[turn].location].owner < 0:
             if (board.locations[players[turn].location].owner == -1): #unowned
-                output += set_cursor_str(0, 37) + "this property is unowned, b to buy"
+                output_options.append("b to buy this property")
+                output_notiffs.append("You landed on an unowned property!")
             elif (board.locations[players[turn].location].owner == -2): #mortgaged
                 pass
             elif (board.locations[players[turn].location].owner == -3): #community chest
@@ -722,12 +724,29 @@ def evaluate_board_location(num_rolls: int, dice: tuple) -> str:
             players[board.locations[cl].owner].receive(rent)
             update_history(f"{players[turn].name} paid ${rent} to {players[board.locations[cl].owner].name}")
     refresh_board()
-        
+
+    output = ""    
     # Check for doubles and roll again only if player wasn't in jail at the start of their turn
     if dice[0] == dice[1]: # and not was_in_jail:
-        num_rolls += 1
-        request_roll()
-    return "player_choice" + output + set_cursor_str(0, 36) + "e to end turn, p to manage properties, d to view a deed?" + get_gameboard()
+        output_notiffs.append("You rolled doubles! Roll again!")
+        output_options.append("roll to roll again")
+        output += "rolled_doubles"
+    else:
+        output_options.append("e to end turn")
+
+    output_options.append("p to manage properties")
+    output_options.append("d to view a deed")
+
+    if len(output_notiffs) != 0:
+        output += set_cursor_str(0, 37)
+        for notiff in output_notiffs:
+            output += notiff + " "
+    output += set_cursor_str(0, 36)
+    for option in output_options:
+        output += option + ", "
+    output = output[:-3]
+
+    return "player_choice" + output + get_gameboard()
 
 def end_turn():
     global turn
