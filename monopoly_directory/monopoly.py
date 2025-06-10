@@ -674,7 +674,7 @@ def evaluate_board_location(num_rolls: int, dice: tuple) -> str:
         done_moving_around = True
         if board.locations[players[turn].location].owner < 0:
             if (board.locations[players[turn].location].owner == -1): #unowned
-                output_options.append("b to buy this property")
+                output_options.append("b to buy property")
                 output_notiffs.append("You landed on an unowned property!")
             elif (board.locations[players[turn].location].owner == -2): #mortgaged
                 pass
@@ -728,14 +728,14 @@ def evaluate_board_location(num_rolls: int, dice: tuple) -> str:
     output = ""    
     # Check for doubles and roll again only if player wasn't in jail at the start of their turn
     if dice[0] == dice[1]: # and not was_in_jail:
-        output_notiffs.append("You rolled doubles! Roll again!")
+        output_notiffs.append("Doubles! Roll again!")
         output_options.append("roll to roll again")
         output += "rolled_doubles"
     else:
         output_options.append("e to end turn")
 
     output_options.append("p to manage properties")
-    output_options.append("d to view a deed")
+    output_options.append("d to view deed")
 
     if len(output_notiffs) != 0:
         output += set_cursor_str(0, 37)
@@ -744,7 +744,7 @@ def evaluate_board_location(num_rolls: int, dice: tuple) -> str:
     output += set_cursor_str(0, 36)
     for option in output_options:
         output += option + ", "
-    output = output[:-3]
+    output = output[:-2]
 
     return "player_choice" + output + get_gameboard()
 
